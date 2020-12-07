@@ -1,3 +1,4 @@
+import { resolvePlugin } from "@babel/core";
 import React, { useState } from "react";
 import {
   StyleSheet,
@@ -11,7 +12,9 @@ import {
 
 } from "react-native";
 
-export const {CalendarModule} = NativeModules
+import {request, PERMISSIONS} from 'react-native-permissions';
+
+export const {LocalOnlyHotspot} = NativeModules
 
 
 
@@ -19,14 +22,30 @@ function network(props) {
   const [SSID, setSsid] = useState("");
   const [password, setPassword] = useState("");
 
+  // request(PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION).then((result) => {
+  //   console.log("COARSE LOCATION: ",result)
+  // })
+  // request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION).then((result) => {
+  //   console.log("FINE LOCATION: ", result)
+  // })
+
 
   async function checkIt() {
-
   
-    CalendarModule.createCalendarEvent('Me cago en tu puta madre', 'la madre que te pario payaso');
+   
+    await LocalOnlyHotspot.start(LocalOnlyHotspot.start(
+      (data)=>{
+        
+        console.log(data)
+      },(reason)=>{
+        console.log(reason)
+      }))
 
-      
-     
+ 
+
+
+
+
   }
  
 
