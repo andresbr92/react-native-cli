@@ -1,4 +1,4 @@
-import { resolvePlugin } from "@babel/core";
+
 import React, { useState } from "react";
 import {
   StyleSheet,
@@ -12,7 +12,7 @@ import {
 
 } from "react-native";
 
-import {request, PERMISSIONS} from 'react-native-permissions';
+import {requestMultiple,request, PERMISSIONS} from 'react-native-permissions';
 
 export const {LocalOnlyHotspot} = NativeModules
 
@@ -22,13 +22,14 @@ function network(props) {
   const [SSID, setSsid] = useState("");
   const [password, setPassword] = useState("");
 
-  // request(PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION).then((result) => {
-  //   console.log("COARSE LOCATION: ",result)
+  
+  requestMultiple([PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION, PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION]).then((statuses) => {
+    console.log('COARSE', statuses[PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION]);
+    console.log('FINE', statuses[PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION]);
+  });
+  // request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION ).then(res => {
+  //   console.log(res)
   // })
-  // request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION).then((result) => {
-  //   console.log("FINE LOCATION: ", result)
-  // })
-
 
   async function checkIt() {
   
