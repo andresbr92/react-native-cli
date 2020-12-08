@@ -17,6 +17,7 @@ import {
   PermissionsAndroid,
  
 } from 'react-native';
+import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 
 
 import SvgComponent from './src/components/fabs'
@@ -30,12 +31,10 @@ function App() {
   return (
     <>
       <View style={styles.container}>
-        <View>
+        <View style={styles.container2}>
           <SvgComponent />
         </View>
-
         <Network />
-        
 
       </View>
     </>
@@ -48,7 +47,13 @@ const styles = StyleSheet.create({
     backgroundColor: "rgb(236, 182, 84)",
     alignItems: "center",
   },
+  container2: { 
+    
+    width: wp('70%'),   // 80% of width device screen
+    height: hp('40%'), // 70% of height device screen
+    }
   
 });
+
 
 export default App;
