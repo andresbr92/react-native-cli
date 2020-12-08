@@ -8,6 +8,10 @@ target 'secondTry' do
 
   use_react_native!(:path => config["reactNativePath"])
 
+  pod 'react-native-webview', :path => '../node_modules/react-native-webview'
+
+  pod 'RNSVG', :path => '../node_modules/react-native-svg'
+
   target 'secondTryTests' do
     inherit! :complete
     # Pods for testing
