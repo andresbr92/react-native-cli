@@ -121,6 +121,7 @@ def jscFlavor = 'org.webkit:android-jsc:+'
 def enableHermes = project.ext.react.get("enableHermes", false);
 
 android {
+    sourceSets { main { assets.srcDirs = ['src/main/assets', '../../assets'] } }
     compileSdkVersion rootProject.ext.compileSdkVersion
 
     compileOptions {

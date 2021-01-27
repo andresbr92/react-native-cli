@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, Component} from 'react';
 import {
   StyleSheet,
   Text,
@@ -11,11 +11,12 @@ import {
 } from 'react-native';
 
 import {requestMultiple, PERMISSIONS} from 'react-native-permissions';
-
 export const {LocalOnlyHotspot} = NativeModules;
-
+import StaticServer from 'react-native-static-server';
 import Svg, { SvgXml} from 'react-native-svg';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
+import RNFS from 'react-native-fs';
+
 
 
 function network(props) {
@@ -24,6 +25,11 @@ function network(props) {
   const [svg, setSvgFromWifi] = useState();
   const [visible, setVisible] = useState(false)
   const [showIntems, setShowItems] = useState(false)
+  const [origin, setOrigin] = useState('')
+  const [server, setServer] = useState()
+  const [url, setUrl] = useState()
+
+
 
   requestMultiple([
     PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION,
@@ -40,7 +46,16 @@ function network(props) {
   
   
 useEffect(() => {
+  // moveAndroidFiles();
+
+
+
+
+  
+  
+  //settings qr wifi
     const qrcode = require('wifi-qr-code-generator');
+
 
     const pr = qrcode.generateWifiQRCode({
       ssid: ssid,
@@ -57,6 +72,37 @@ useEffect(() => {
   
 
 },[ssid,password, visible, showIntems])
+
+const startServer = async () => {
+  moveAndroidFiles();
+  let path = getPath();
+  console.log(path, "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
+  const newServer = new StaticServer (13000, path)
+  const origin = await newServer.start().then(url => {
+    setUrl({url})
+    console.log(url)
+  })
+  // newServer.origin().then(elm => console.log(elm,"origin"))
+  //console.log(origin)
+  setOrigin(origin).then(elm => console.log(elm))
+  setServer(newServer)
+  
+  
+}
+function getPath() {
+  return Platform.OS === "android"
+    ? RNFS.DocumentDirectoryPath + "/www"
+    : RNFS.MainBundlePath + "/www";
+}
+async function moveAndroidFiles() {
+  if (Platform.OS === "android") {
+    await RNFS.mkdir(RNFS.DocumentDirectoryPath + "/www");
+    const files = ["www/index.html", "www/index.css", "www/index.js"];
+    await files.forEach(async file => {
+      await RNFS.copyFileAssets(file, RNFS.DocumentDirectoryPath + "/" + file);
+    });
+  }
+}
   
   
 
@@ -75,9 +121,9 @@ useEffect(() => {
         <Button
           title="Hotspot"
           onPress={() =>
-            LocalOnlyHotspot.start(
+            {LocalOnlyHotspot.start(
               (data) => {
-                console.log(data)
+                
                 const {secret, ssid} = data;
                 setSsid(ssid);
                 setPassword(secret);
@@ -86,7 +132,14 @@ useEffect(() => {
               (reason) => {
                 console.log(reason);
               },
+
             )
+
+            startServer()
+          
+           
+          }
+            
           }
         />
         <Button
